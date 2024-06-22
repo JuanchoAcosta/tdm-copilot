@@ -5,7 +5,7 @@ class Player(models.Model):
     age = models.IntegerField()
     lastname = models.CharField(max_length=100)
     name = models.CharField(max_length=100)
-    tmt_id = models.IntegerField()
+    tmt_id = models.IntegerField() # The only League supported
 
     def __str__(self):
         return f"{self.lastname}, {self.name}"
