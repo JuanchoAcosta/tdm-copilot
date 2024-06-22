@@ -3,6 +3,8 @@ from pyppeteer.network_manager import Response
 
 
 class VisitPageContext:
+    GOTO_TIMEOUT = 60000
+
     browser = None
     page = None
 
@@ -13,7 +15,7 @@ class VisitPageContext:
         """Open a browser and visit the page"""
         self.browser = await launch()
         self.page = await self.browser.newPage()
-        await self.page.goto(self.url)
+        await self.page.goto(self.url, {'timeout': self.GOTO_TIMEOUT})
         return self.page
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):

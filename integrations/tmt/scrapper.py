@@ -1,3 +1,5 @@
+import re as regular_expressions
+
 from .context import VisitPageContext
 
 
@@ -20,16 +22,29 @@ class TMTScrapperService:
         url = f"{self.base_url}/ranking.asp"
 
         async with VisitPageContext(url) as page:
-            content = await page.content()
-            print(url, content)
+            links = await page.evaluate('''() => {
+                let links = [];
+                let anchors = document.querySelectorAll('a');
+                anchors.forEach(link => {
+                    links.push(link.href);
+                });
+                return links;
+            }''')
 
-            # hrefs = await page.evaluate('''() => {
-            #     let hrefs = [];
-            #     let links = document.querySelectorAll('a');
-            #     links.forEach(link => {
-            #         hrefs.push(link.href);
-            #     });
-            #     return hrefs;
-            # }''')
+            filtered_href = [
+                link for link in links
+                if '/ranking.asp?pagina=' in link
+            ]
 
-            # print('Hrefs de los enlaces:', hrefs)
+            looked_for_href = filtered_href[-2] # last one is the next page
+
+            print('Looked for href:', looked_for_href)
+
+            # Regex pattern to extract the page number
+            pattern = r"pagina=(\d+)&"
+
+            # Search for the pattern in the URL
+            match = regular_expressions.search(pattern, looked_for_href)
+            print("Match:", pattern, looked_for_href, match.group(1))
+
+            return int(match.group(1))
