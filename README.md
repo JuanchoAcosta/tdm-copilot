@@ -12,4 +12,7 @@ Create virtualenv:
 
 ## Coming features!
 
-- 
+- TMT scrapping
+  - ranking
+  - player stats
+  - player history
