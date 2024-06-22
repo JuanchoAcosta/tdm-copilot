@@ -1,22 +1,23 @@
-import re as regular_expressions
 
 from .context import VisitPageContext
+from .utils import TmtUtils
 
 
-class TMTScrapperService:
+class TmtScrapperService:
     base_url = "https://www.tenisdemesaparatodos.com"
+
+    def __init__(
+        self,
+        utils: TmtUtils
+    ):
+        self._utils = utils
 
     async def get_ranking_page(self, page_number: int) -> int:
         url = f"{self.base_url}/ranking.asp?pagina={page_number}"
 
         async with VisitPageContext(url) as page:
 
-            href = await page.evaluate('''() => {
-                const link = document.querySelector('a');
-                return link ? link.href : null;
-            }''')
-
-            print('Href del enlace:', href)
+            return page
 
     async def get_total_ranking_pages(self):
         url = f"{self.base_url}/ranking.asp"
@@ -38,13 +39,8 @@ class TMTScrapperService:
 
             looked_for_href = filtered_href[-2] # last one is the next page
 
-            print('Looked for href:', looked_for_href)
+            max_page_number = self._utils.get_page_number_from_url(
+                url=looked_for_href,
+            )
 
-            # Regex pattern to extract the page number
-            pattern = r"pagina=(\d+)&"
-
-            # Search for the pattern in the URL
-            match = regular_expressions.search(pattern, looked_for_href)
-            print("Match:", pattern, looked_for_href, match.group(1))
-
-            return int(match.group(1))
+            return max_page_number

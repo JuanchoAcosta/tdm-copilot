@@ -3,7 +3,7 @@ from pyppeteer.network_manager import Response
 
 
 class VisitPageContext:
-    GOTO_TIMEOUT = 60000
+    GOTO_TIMEOUT = 3*60*1000
 
     browser = None
     page = None
