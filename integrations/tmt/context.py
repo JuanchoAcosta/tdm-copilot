@@ -4,15 +4,18 @@ from pyppeteer.network_manager import Response
 
 class VisitPageContext:
     browser = None
+    page = None
 
     def __init__(self, url: str):
         self.url = url
 
     async def __aenter__(self) -> Response:
+        """Open a browser and visit the page"""
         self.browser = await launch()
-        page = await self.browser.newPage()
-        await page.goto(self.url)
-        return page
+        self.page = await self.browser.newPage()
+        await self.page.goto(self.url)
+        return self.page
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self.page.close()
         await self.browser.close()

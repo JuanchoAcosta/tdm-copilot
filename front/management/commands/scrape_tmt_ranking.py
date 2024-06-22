@@ -12,5 +12,4 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         scrapper = TMTScrapperService()
-
-        asyncio.get_event_loop().run_until_complete(scrapper.get_ranking_page(1))
+        asyncio.run(scrapper.get_total_ranking_pages())
